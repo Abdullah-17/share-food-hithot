@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="15dp"
+    >
+    
+    <LinearLayout 
+        android:focusable="true" 
+        android:focusableInTouchMode="true" 
+        android:layout_width="0px" 
+        android:layout_height="0px"
+        />
+    
+    <Button
+        android:id="@+id/buschange_swap_btn"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/change_btn_bg"
+        />
+    
+    <LinearLayout
+        android:id="@+id/start"
+         android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/buschange_swap_btn"
+         android:layout_marginTop="15dp"   
+         android:layout_marginLeft="15dp"     
+         android:orientation="horizontal"
+       >
+       <EditText
+        android:id="@+id/buschange_start_place_edit"
+         android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:hint="出发地：当前位置"
+        android:textColor="@color/blue"      
+       
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/myloc"
+        />
+        
+    <Button
+        android:id="@+id/buschange_start_place_btn"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:background="@drawable/triangle_btn"     
+        android:layout_gravity="center"
+       android:layout_marginRight="10dp"
+        android:layout_marginLeft="6dp"
+        />  
+    </LinearLayout>
+         
+<!--         
+    <EditText
+        android:id="@+id/buschange_start_place_edit"
+        android:layout_width="320px"
+        android:layout_height="60px"
+        android:hint="出发地：当前位置"
+        android:textColor="@color/blue"
+        android:layout_marginTop="20px"
+        android:layout_marginLeft="80px"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/myloc"
+        />
+        
+    <Button
+        android:id="@+id/buschange_start_place_btn"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:background="@drawable/triangle_btn"
+        android:layout_toRightOf="@id/buschange_start_place_edit"
+        android:layout_alignTop="@id/buschange_start_place_edit"
+        android:layout_marginTop="5px"
+        android:layout_marginLeft="10px"
+        />
+   -->  
+        
+    <LinearLayout 
+        android:id="@+id/dest"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/start"
+        android:layout_below="@id/start"
+        android:layout_marginTop="6dp"   
+    >
+        
+        
+     
+    <EditText
+        android:id="@+id/buschange_dest_place_edit"
+        android:layout_width="0dp"
+       android:layout_height="40dp"
+        android:layout_weight="1"
+        android:hint="输入目的地"       
+        
+        android:textColor="@color/blue"      
+        android:ellipsize="end"
+        android:singleLine="true"
+        />
+        
+        
+    <Button
+        android:id="@+id/buschange_dest_place_btn"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:background="@drawable/triangle_btn"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="6dp"
+        />
+        
+    </LinearLayout>       
+     
+    <!-- <ImageView
+        android:id="@+id/buschange_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/list_line"
+        android:layout_marginTop="10px"
+        android:layout_below="@id/buschange_dest_place_edit"
+        />
+         -->
+    
+        
+    <Button
+        android:id="@+id/buschange_calculate_route_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/big_button_bg"
+        android:layout_below="@id/dest"
+        android:layout_marginTop="15dp"
+        android:layout_centerInParent="true"
+        android:text="GO"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        
+        />
+
+</RelativeLayout>
+   
+    
+

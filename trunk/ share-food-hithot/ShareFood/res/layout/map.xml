@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background"
+    >
+	
+	<com.amap.mapapi.map.MapView android:id="@+id/main_mapView"
+		android:layout_width="fill_parent" android:layout_height="fill_parent" 
+		android:clickable="true"    
+	
+	/>
+	  <Button
+        android:id="@+id/back_rect_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:background="@drawable/navi_plan_selector" />
+  <LinearLayout
+       
+        android:id="@+id/map_header_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/map_background"
+        android:orientation="horizontal" >
+        
+        <LinearLayout
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
+       
+        <EditText
+            android:id="@+id/map_search_place"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+           
+            android:focusable="false"
+            android:hint="搜索地点" />
+
+        <Button
+            android:id="@+id/map_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/map_route_bg" />
+
+        <Button
+            android:id="@+id/map_layer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/map_layer_bg" />
+
+        <Button
+            android:id="@+id/map_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/map_origin_bg" />
+    </LinearLayout>
+	
+</RelativeLayout>

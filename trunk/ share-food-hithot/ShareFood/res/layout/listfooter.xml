@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/map_background3"
+    android:orientation="horizontal" 
+     >
+    
+
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="上一页" 
+            android:layout_marginTop="3dip"
+            android:id="@+id/preBtn"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="下一页" 
+            android:layout_marginTop="3dip"
+            android:id="@+id/nextBtn"/>
+    
+</LinearLayout>
