@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">ShareFood</string>
+    <string name="search_title">搜索关键字</string>
+    <string name="nonetwork_title">网络无法连接</string>
+    <string name="nonetwork_msg">请确认已开启WLAN或开启数据访问功能,且网络信号良好</string>
+    <string name="setnetwork">设置网络</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="no_awake">以后不再提醒</string>
+    <string name="increase_accuracy_title">提高 \"我的位置\"的精确度</string>
+    <string name="increase_accuracy_body">目前并未开启所有位置源，为了最快，最精确地检测位置，请执行以下操作:\n%s </string>    <string name="skip">跳过</string>
+    <string name="set">设置</string>
+    <string name="myloc">我的位置</string>
+   
+
+</resources>

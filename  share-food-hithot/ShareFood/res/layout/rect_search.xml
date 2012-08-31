@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/map_background2"
+        >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true" >
+
+        <TextView
+            android:id="@+id/rect_search_quotation1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:text="”"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/rect_search_keyword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="“的搜索结果"
+            android:textColor="@color/black" />
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/back_btn"
+			android:text="返回附近道路"  
+			android:background="@drawable/button_bg"
+			android:textColor="@color/white"
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="10dip"
+			android:visibility="invisible"
+			android:layout_centerVertical="true" >
+        </Button>
+    </RelativeLayout>
+    
+<!-- //LIUQUANXING -->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:layout_weight="1.0" >
+
+        <ListView
+            android:id="@+id/rect_search_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cacheColorHint="#FFEEEEEE"
+            android:divider="@drawable/list_line"
+			android:background="@drawable/search_layout_bg"
+            android:dividerHeight="1dip" />
+    </LinearLayout>
+<!-- 
+    <LinearLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="@drawable/map_background3"
+        android:orientation="horizontal" >
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="上一页" 
+            android:layout_marginTop="3dip"
+            android:id="@+id/preBtn"/>
+
+        <Button
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="下一页" 
+            android:layout_marginTop="3dip"
+            android:id="@+id/nextBtn"/>
+    </LinearLayout>
+ -->
+</LinearLayout>

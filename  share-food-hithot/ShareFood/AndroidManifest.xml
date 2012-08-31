@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hobom.mobile"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <application
+        android:name="FoodApplication"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" >
+            </meta-data>
+        </activity>
+        <activity
+            android:name=".ui.FoodListActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".ui.MapGroup"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+        <activity
+            android:name=".ui.FoodMapActivity"
+             android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation" >
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.CameraActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".ui.AnalysisActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".ui.RectQueryResultActivity"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".ui.MoreGroup"
+            android:configChanges="keyboardHidden|orientation" />
+        <activity
+            android:name=".ui.MoreActivity"
+            android:configChanges="keyboardHidden|orientation" >
+        </activity>
+    <activity
+            android:name=".ui.MapRouteActivity"
+            android:theme="@style/Theme.CustomDialog" 
+            android:launchMode="singleTop" 
+            android:configChanges="keyboardHidden|orientation" />
+     <activity
+            android:name=".ui.DriveRouteActivity"
+            android:configChanges="keyboardHidden|orientation" />
+      <activity
+            android:name=".ui.BusChangeActivity"
+            android:configChanges="keyboardHidden|orientation" />
+     <activity
+            android:name=".ui.MapPointChooseActivity"
+            android:configChanges="keyboardHidden|orientation" />  
+        <provider
+            android:name=".ui.SearchSuggestionProvider"
+            android:authorities="com.hobom.mobile.ui.SearchSuggestionProvider" >
+        </provider>
+    </application>
+    <!-- ************************************* -->
+    <!-- 定位相关权限 -->
+    <!-- ************************************* -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
+    </uses-permission>
+
+</manifest>
