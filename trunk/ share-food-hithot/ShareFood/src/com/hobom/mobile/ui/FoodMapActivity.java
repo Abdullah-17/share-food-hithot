@@ -1,6 +1,7 @@
 package com.hobom.mobile.ui;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -20,9 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.amap.mapapi.core.AMapException;
 import com.amap.mapapi.core.GeoPoint;
@@ -31,17 +32,18 @@ import com.amap.mapapi.map.MapActivity;
 import com.amap.mapapi.map.MapController;
 import com.amap.mapapi.map.MapView;
 import com.amap.mapapi.map.MyLocationOverlay;
+import com.amap.mapapi.map.RouteOverlay;
 import com.amap.mapapi.poisearch.PoiPagedResult;
 import com.amap.mapapi.poisearch.PoiSearch;
 import com.amap.mapapi.poisearch.PoiSearch.SearchBound;
 import com.amap.mapapi.poisearch.PoiTypeDef;
+import com.amap.mapapi.route.Route;
 import com.hobom.mobile.FoodApplication;
 import com.hobom.mobile.R;
 import com.hobom.mobile.model.POISearchResult;
 import com.hobom.mobile.util.ActivityStackManager;
 import com.hobom.mobile.util.Connector;
 import com.hobom.mobile.util.Constant;
-import com.hobom.mobile.util.FoodUtil;
 import com.hobom.mobile.util.MyLog;
 import com.hobom.mobile.util.PreferenceUtil;
 
@@ -82,6 +84,7 @@ public class FoodMapActivity extends MapActivity {
 	private int type = 1;
 	private final int REQUEST_SETTING_NETWORK = 100;
 	private final int REQUEST_SETTING_ACCURACY = 200;
+	
 	private Handler checkHandler = new Handler() {
 		public void handleMessage(Message message) {
 			int what = message.what;

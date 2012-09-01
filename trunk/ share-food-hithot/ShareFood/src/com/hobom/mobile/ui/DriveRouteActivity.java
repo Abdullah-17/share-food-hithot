@@ -1,8 +1,8 @@
 package com.hobom.mobile.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -29,13 +30,14 @@ import com.amap.mapapi.core.AMapException;
 import com.amap.mapapi.core.GeoPoint;
 import com.amap.mapapi.core.PoiItem;
 import com.amap.mapapi.location.LocationManagerProxy;
+import com.amap.mapapi.map.MapActivity;
 import com.amap.mapapi.map.MapView;
 import com.amap.mapapi.map.RouteMessageHandler;
 import com.amap.mapapi.map.RouteOverlay;
 import com.amap.mapapi.poisearch.PoiPagedResult;
 import com.amap.mapapi.poisearch.PoiSearch;
-import com.amap.mapapi.poisearch.PoiTypeDef;
 import com.amap.mapapi.poisearch.PoiSearch.Query;
+import com.amap.mapapi.poisearch.PoiTypeDef;
 import com.amap.mapapi.route.Route;
 import com.hobom.mobile.R;
 import com.hobom.mobile.ui.RouteSearchPoiDialog.OnListItemClick;
@@ -46,7 +48,7 @@ import com.hobom.mobile.util.Constant;
  * @author mingxunzh
  *
  */
-public class DriveRouteActivity extends Activity  implements LocationListener, RouteMessageHandler {
+public class DriveRouteActivity extends MapActivity  implements LocationListener, RouteMessageHandler {
 
 	private static final String TAG = "DriveRouteActivity";
 
@@ -78,7 +80,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 	private PoiPagedResult endSearchResult;
 	private GeoPoint startPoint=null;
 	private GeoPoint endPoint=null;
-
+    private MapView mMapView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -198,6 +200,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 			public void run() {
 
 				try {
+					Looper.prepare();
 					routeResult = Route.calculateRoute(DriveRouteActivity.this,
 							fromAndTo, mode);
 					if(progDialog.isShowing()){
@@ -211,6 +214,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 					msg.obj =  e.getErrorMessage();
 					routeHandler.sendMessage(msg);
 				}
+				Looper.loop();
 			}
 		});
 		t.start();
@@ -637,20 +641,25 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 			} else if (msg.what == Constant.ROUTE_SEARCH_RESULT) {
 				progDialog.dismiss();
 				if (routeResult != null && routeResult.size()>0) {
+					setContentView(R.layout.simplemap);
+					mMapView = (MapView)findViewById(R.id.mapView);
 					Route route = routeResult.get(0);
-					/*if (route != null) {
+					
+					
+				
+					if (route != null) {
 						if (ol != null) {
 							ol.removeFromMap(mMapView);
 						}
-						ol = new RouteOverlay(BusChangeActivity.this, route);
-						ol.registerRouteMessage(BusChangeActivity.this); // 注册消息处理函数
+						ol = new RouteOverlay(DriveRouteActivity.this, route);
+						ol.registerRouteMessage(DriveRouteActivity.this); // 注册消息处理函数
 						ol.addToMap(mMapView); // 加入到地图
 						ArrayList<GeoPoint> pts = new ArrayList<GeoPoint>();
 						pts.add(route.getLowerLeftPoint());
 						pts.add(route.getUpperRightPoint());
 						mMapView.getController().setFitView(pts);//调整地图显示范围
 						mMapView.invalidate();
-					}*/
+					}
 				}
 			} else if (msg.what == Constant.ROUTE_SEARCH_ERROR) {
 				progDialog.dismiss();
@@ -677,6 +686,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
+					Looper.prepare();
 					// 调用搜索POI方法
 					PoiSearch poiSearch = new PoiSearch(DriveRouteActivity.this, startQuery); // 设置搜索字符串
 					try {
@@ -691,6 +701,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 						msg.obj =  e.getErrorMessage();
 						routeHandler.sendMessage(msg);
 					} 
+					Looper.loop();
 				}
 
 			});
@@ -711,6 +722,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
+					Looper.prepare();
 					PoiSearch poiSearch = new PoiSearch(DriveRouteActivity.this,endQuery); // 设置搜索字符串
 					try {
 						endSearchResult = poiSearch.searchPOI();
@@ -724,6 +736,7 @@ public class DriveRouteActivity extends Activity  implements LocationListener, R
 						msg.obj =  e.getErrorMessage();
 						routeHandler.sendMessage(msg);
 					} 
+					Looper.loop();
 				}
 
 			});
