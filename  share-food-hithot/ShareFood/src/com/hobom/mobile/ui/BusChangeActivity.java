@@ -13,6 +13,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -394,6 +395,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 			public void run() {
 
 				try {
+					Looper.prepare();
 					routeResult = Route.calculateRoute(BusChangeActivity.this,
 							fromAndTo, mode);
 					if(progDialog.isShowing()){
@@ -407,6 +409,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 					msg.obj =  e.getErrorMessage();
 					routeHandler.sendMessage(msg);
 				}
+				Looper.loop();
 			}
 		});
 		t.start();
@@ -698,6 +701,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
+					Looper.prepare();
 					// µ÷ÓÃËÑË÷POI·½·¨
 					PoiSearch poiSearch = new PoiSearch(BusChangeActivity.this, startQuery); // ÉèÖÃËÑË÷×Ö·û´®
 					try {
@@ -712,6 +716,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 						msg.obj =  e.getErrorMessage();
 						routeHandler.sendMessage(msg);
 					} 
+					Looper.loop();
 				}
 
 			});
@@ -732,6 +737,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
+					Looper.prepare();
 					PoiSearch poiSearch = new PoiSearch(BusChangeActivity.this,endQuery); // ÉèÖÃËÑË÷×Ö·û´®
 					try {
 						endSearchResult = poiSearch.searchPOI();
@@ -745,6 +751,7 @@ public class BusChangeActivity extends Activity implements LocationListener, Rou
 						msg.obj =  e.getErrorMessage();
 						routeHandler.sendMessage(msg);
 					} 
+					Looper.loop();
 				}
 
 			});
