@@ -10,6 +10,7 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -84,7 +85,7 @@ public class FoodMapActivity extends MapActivity {
 	private int type = 1;
 	private final int REQUEST_SETTING_NETWORK = 100;
 	private final int REQUEST_SETTING_ACCURACY = 200;
-	
+
 	private Handler checkHandler = new Handler() {
 		public void handleMessage(Message message) {
 			int what = message.what;
@@ -119,21 +120,42 @@ public class FoodMapActivity extends MapActivity {
 		init();
 
 		ActivityStackManager.getInstance().addActivity(this);
-		Intent intent = getIntent();
+
 		noAwaked1 = PreferenceUtil.getSettingBoolean(
 				Constant.INCREASE_ACCURACY_AWAKE, false);
-		int lastLat = PreferenceUtil.getSettingInt(Constant.LASTLAT,
-				(int) (39.906033 * 1E6));
-		int lastLon = PreferenceUtil.getSettingInt(Constant.LASTLON,
-				(int) (116.397695 * 1E6));
-		latitude = intent.getIntExtra("lat", lastLat);
-		longitude = intent.getIntExtra("lon", lastLon);
-		point = new GeoPoint(latitude, longitude); // 用给定的经纬度构造一个GeoPoint，单位是微度
-													// (度 * 1E6)
+
 		mapView.setBuiltInZoomControls(true); // 设置启用内置的缩放控件
 		mMapController = mapView.getController();
+
+		mLocationOverlay = new MyLocationOverlay(this, mapView);
+
+		mapView.getOverlays().add(mLocationOverlay);
+		mLocationOverlay.runOnFirstFix(new Runnable() {
+			public void run() {
+				handler.sendMessage(Message.obtain(handler,
+						Constant.FIRST_LOCATION));
+			}
+		});
+
+		Location loc = mLocationOverlay.getLastFix();
+		if (loc==null||(loc.getLatitude() == 0 || loc.getLongitude() == 0) ){
+			int lastLat = PreferenceUtil.getSettingInt(Constant.LASTLAT,
+					(int) (39.98237 * 1E6));
+			int lastLon = PreferenceUtil.getSettingInt(Constant.LASTLON,
+					(int) (116.304923 * 1E6));
+			latitude = lastLat;
+			longitude = lastLon;
+		} else {
+			latitude = (int) (loc.getLatitude() * 1E6);
+			longitude = (int) (loc.getLongitude() * 1E6);
+		}
+		System.out.println("the latitude and longitude is:" + latitude + ":"
+				+ longitude);
+		point = new GeoPoint(latitude, longitude); // 用给定的经纬度构造一个GeoPoint，单位是微度
+													// (度 * 1E6)
 		mMapController.setCenter(point); // 设置地图中心点
 		mMapController.setZoom(12); // 设置地图zoom级别
+
 		if (type == 1)
 			checkHandler.sendEmptyMessage(STEP1);
 		progDialog = new ProgressDialog(this);
@@ -388,37 +410,22 @@ public class FoodMapActivity extends MapActivity {
 	}
 
 	private void startLocation() {
-		Toast.makeText(this, "正在获取您的位置", Toast.LENGTH_SHORT).show();
-		if (mLocationOverlay == null) {
-			mLocationOverlay = new MyLocationOverlay(this, mapView);
-
-			mapView.getOverlays().add(mLocationOverlay);
-
-			mLocationOverlay.runOnFirstFix(new Runnable() {
-				public void run() {
-					handler.sendMessage(Message.obtain(handler,
-							Constant.FIRST_LOCATION));
-				}
-			});
-
-		}
-		boolean enable = mLocationOverlay.enableMyLocation();
-		if (enable) {
-			point = mLocationOverlay.getMyLocation();
-			latitude = point.getLatitudeE6();
-			longitude = point.getLongitudeE6();
-			PreferenceUtil.setSettingInt(Constant.LASTLAT, latitude);
-			PreferenceUtil.setSettingInt(Constant.LASTLON, longitude);
-		}
+		 Toast.makeText(this, "正在获取您的位置", Toast.LENGTH_SHORT).show();
 
 	}
 
 	@Override
+	protected void onPause() {
+		this.mLocationOverlay.disableMyLocation();
+		this.mLocationOverlay.disableCompass();
+		super.onPause();
+	}
+
+	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
-		System.out.println("onResume");
+		this.mLocationOverlay.enableMyLocation();
+		this.mLocationOverlay.enableCompass();
 		super.onResume();
-		// enableMyLocation();
 	}
 
 	public void doSearchQuery(Intent intent) {
@@ -494,6 +501,17 @@ public class FoodMapActivity extends MapActivity {
 						Toast.LENGTH_SHORT).show();
 			} else if (msg.what == Constant.FIRST_LOCATION) {
 				mMapController.animateTo(mLocationOverlay.getMyLocation());
+
+				point = mLocationOverlay.getMyLocation();
+				latitude = point.getLatitudeE6();
+				longitude = point.getLongitudeE6();
+				System.out
+						.println("the latitude and longitude in fisrt location is:"
+								+ latitude + ":" + longitude);
+
+				PreferenceUtil.setSettingInt(Constant.LASTLAT, latitude);
+				PreferenceUtil.setSettingInt(Constant.LASTLON, longitude);
+
 			}
 		}
 	};
