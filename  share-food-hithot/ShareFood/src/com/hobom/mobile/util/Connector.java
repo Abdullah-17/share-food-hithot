@@ -36,103 +36,113 @@ import android.telephony.TelephonyManager;
 
 public class Connector {
 
-	
 	/**
-     * Checks if is connected.（没有网络连接则不能登录，并提示用户)
-     * @param ctx the ctx
-     * @return true, if is connected
-     */
-    public static boolean isConnected(final Context ctx) {
-	ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(
-	    Context.CONNECTIVITY_SERVICE);
-	NetworkInfo ni = cm.getActiveNetworkInfo();
-	return ni != null && ni.isConnected();
-    }
-
-    /**
-     * Checks if is wifi.
-     * @param ctx the ctx
-     * @return true, if is wifi
-     */
-    public static boolean isWifi(final Context ctx) {
-	WifiManager wm = (WifiManager) ctx.getSystemService(
-	    Context.WIFI_SERVICE);
-	WifiInfo wi = wm.getConnectionInfo();
-	if (wi != null
-	    && (WifiInfo.getDetailedStateOf(wi.getSupplicantState())
-		== DetailedState.OBTAINING_IPADDR
-		|| WifiInfo.getDetailedStateOf(wi.getSupplicantState())
-		== DetailedState.CONNECTED)) {
-	    return false;
+	 * Checks if is connected.（没有网络连接则不能登录，并提示用户)
+	 * 
+	 * @param ctx
+	 *            the ctx
+	 * @return true, if is connected
+	 */
+	public static boolean isConnected(final Context ctx) {
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+		return ni != null && ni.isConnected();
 	}
-	return false;
-    }
-    public static boolean wifiOpened(final Context context){
-    	WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-    	return wm.isWifiEnabled();
-    }
-    /**
-     * Checks if is umts.
-     * @param ctx the ctx
-     * @return true, if is umts
-     */
-    public static boolean isUmts(final Context ctx) {
-	TelephonyManager tm = (TelephonyManager) ctx.getSystemService(
-	    Context.TELEPHONY_SERVICE);
-	return tm.getNetworkType() >= TelephonyManager.NETWORK_TYPE_UMTS;
-    }
 
-    /**
-     * Checks if is edge.
-     * @param ctx the ctx
-     * @return true, if is edge
-     */
-    public static boolean isEdge(final Context ctx) {
-	TelephonyManager tm = (TelephonyManager) ctx.getSystemService(
-	    Context.TELEPHONY_SERVICE);
-	return tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_EDGE;
-    }
+	/**
+	 * Checks if is wifi.
+	 * 
+	 * @param ctx
+	 *            the ctx
+	 * @return true, if is wifi
+	 */
+	public static boolean isWifi(final Context ctx) {
+		WifiManager wm = (WifiManager) ctx
+				.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wi = wm.getConnectionInfo();
+		if (wi != null
+				&& (WifiInfo.getDetailedStateOf(wi.getSupplicantState()) == DetailedState.OBTAINING_IPADDR || WifiInfo
+						.getDetailedStateOf(wi.getSupplicantState()) == DetailedState.CONNECTED)) {
+			return false;
+		}
+		return false;
+	}
 
-    
-    /**
-     * 判断是否GPS可用
-     * @param context
-     * @return true if the gps is available
-     */
-    public  static boolean isGPSEnabled(final Context context){
-		LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-	
-		
+	public static boolean wifiOpened(final Context context) {
+		WifiManager wm = (WifiManager) context
+				.getSystemService(Context.WIFI_SERVICE);
+		return wm.isWifiEnabled();
+	}
+
+	/**
+	 * Checks if is umts.
+	 * 
+	 * @param ctx
+	 *            the ctx
+	 * @return true, if is umts
+	 */
+	public static boolean isUmts(final Context ctx) {
+		TelephonyManager tm = (TelephonyManager) ctx
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getNetworkType() >= TelephonyManager.NETWORK_TYPE_UMTS;
+	}
+
+	/**
+	 * Checks if is edge.
+	 * 
+	 * @param ctx
+	 *            the ctx
+	 * @return true, if is edge
+	 */
+	public static boolean isEdge(final Context ctx) {
+		TelephonyManager tm = (TelephonyManager) ctx
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		return tm.getNetworkType() == TelephonyManager.NETWORK_TYPE_EDGE;
+	}
+
+	/**
+	 * 判断是否GPS可用
+	 * 
+	 * @param context
+	 * @return true if the gps is available
+	 */
+	public static boolean isGPSEnabled(final Context context) {
+		LocationManager locationManager = (LocationManager) context
+				.getSystemService(Context.LOCATION_SERVICE);
+
 		return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
 	}
-    /**
-     *  判断是否SD卡可用，不可用则不让登录，并提示用户
-     * @param context
-     * @return
-     */
-    public static boolean isSDCARDAvaible(final Context context){
-    	
-    	return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
-    
-    
-    public static boolean isGPSInService(final Context context){
-    	
-    	LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-    	if(!(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)))
-    		return false;
-    	GpsStatus status = locationManager.getGpsStatus(null); 
-        
-        Iterable<GpsSatellite> sats = status.getSatellites(); 
-        if(sats.iterator().hasNext()){
-        	return true;
-        } 
-        else return false;
-    }
-    
-    
-    public static String request(String urlString, Map<String, String> params) {
+
+	/**
+	 * 判断是否SD卡可用，不可用则不让登录，并提示用户
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static boolean isSDCARDAvaible(final Context context) {
+
+		return Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED);
+	}
+
+	public static boolean isGPSInService(final Context context) {
+
+		LocationManager locationManager = (LocationManager) context
+				.getSystemService(Context.LOCATION_SERVICE);
+		if (!(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)))
+			return false;
+		GpsStatus status = locationManager.getGpsStatus(null);
+
+		Iterable<GpsSatellite> sats = status.getSatellites();
+		if (sats.iterator().hasNext()) {
+			return true;
+		} else
+			return false;
+	}
+
+	public static String request(String urlString, Map<String, String> params) {
 		String strReturn = null;
 		StringBuffer sb = new StringBuffer(urlString);
 
@@ -171,8 +181,7 @@ public class Connector {
 		return strReturn;
 	}
 
-    
-    public static String post(String actionUrl, Map<String, String> params) {
+	public static String post(String actionUrl, Map<String, String> params) {
 
 		HttpPost httpPost = new HttpPost(actionUrl);
 
@@ -206,31 +215,29 @@ public class Connector {
 		return null;
 
 	}
-    public static String getHttpContent(String rometURL, String encoding)
-	{
+
+	public static String getHttpContent(String rometURL, String encoding) {
 		try {
-			 URL url = new URL (rometURL);
-		        URLConnection uc = url.openConnection();
-		        uc.setRequestProperty  ("Authorization", "Basic " + encoding);
-		        uc.setRequestProperty("User-Agent", "Mozilla/5.0");
-		        uc.setRequestProperty("method", "post");  
-		        
-		        InputStream content = (InputStream)uc.getInputStream();
-		        BufferedReader in = new BufferedReader (new InputStreamReader (content,encoding));
-		        StringBuffer buffer = new StringBuffer();
-		        while (in.ready()) {
-					String inString = in.readLine().trim();
-					if (inString.length() != 0)
-					{
-						buffer.append(inString);
-					}
+			URL url = new URL(rometURL);
+			URLConnection uc = url.openConnection();
+			uc.setRequestProperty("Authorization", "Basic " + encoding);
+			uc.setRequestProperty("User-Agent", "Mozilla/5.0");
+			uc.setRequestProperty("method", "post");
+
+			InputStream content = (InputStream) uc.getInputStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					content, encoding));
+			StringBuffer buffer = new StringBuffer();
+			while (in.ready()) {
+				String inString = in.readLine().trim();
+				if (inString.length() != 0) {
+					buffer.append(inString);
 				}
-		        return buffer.toString();
+			}
+			return buffer.toString();
 		} catch (Exception e) {
 		}
-       return null;
+		return null;
 	}
-	
-    
-    
+
 }

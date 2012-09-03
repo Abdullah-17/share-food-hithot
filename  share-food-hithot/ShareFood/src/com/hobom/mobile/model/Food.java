@@ -1,6 +1,8 @@
 package com.hobom.mobile.model;
 
-public class Food {
+import java.io.Serializable;
+
+public class Food implements Serializable{
 
 	/**
 	 * 美食名称
@@ -18,6 +20,14 @@ public class Food {
 	 * 地址
 	 */
 	private String address;
+	/**
+	 * 纬度
+	 */
+	private int latitude;
+	/**
+	 * 经度
+	 */
+	private int longitude;
 	/**
 	 * 图片路径
 	 */

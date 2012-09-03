@@ -13,6 +13,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,49 +31,60 @@
         </activity>
         <activity
             android:name=".ui.FoodListActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+           />
         <activity
             android:name=".ui.MapGroup"
-            android:configChanges="keyboardHidden|orientation" >
+            >
         </activity>
         <activity
             android:name=".ui.FoodMapActivity"
              android:launchMode="singleTop"
-            android:configChanges="keyboardHidden|orientation" >
+             android:screenOrientation="portrait"
+            >
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.CameraActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.AnalysisActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+           />
         <activity
             android:name=".ui.RectQueryResultActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.MoreGroup"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.MoreActivity"
-            android:configChanges="keyboardHidden|orientation" >
+            android:screenOrientation="portrait"
+            >
         </activity>
     <activity
             android:name=".ui.MapRouteActivity"
             android:theme="@style/Theme.CustomDialog" 
             android:launchMode="singleTop" 
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+            />
      <activity
             android:name=".ui.DriveRouteActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+           />
       <activity
             android:name=".ui.BusChangeActivity"
-            android:configChanges="keyboardHidden|orientation" />
+            android:screenOrientation="portrait"
+            />
      <activity
             android:name=".ui.MapPointChooseActivity"
-            android:configChanges="keyboardHidden|orientation" />  
+            android:screenOrientation="portrait"
+           />  
         <provider
             android:name=".ui.SearchSuggestionProvider"
             android:authorities="com.hobom.mobile.ui.SearchSuggestionProvider" >

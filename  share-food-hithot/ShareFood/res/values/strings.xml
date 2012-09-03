@@ -14,6 +14,10 @@
     <string name="increase_accuracy_body">目前并未开启所有位置源，为了最快，最精确地检测位置，请执行以下操作:\n%s </string>    <string name="skip">跳过</string>
     <string name="set">设置</string>
     <string name="myloc">我的位置</string>
-   
-
+    <string name="foodlist">美食列表</string>
+    <string name="thisweek">最近一周</string>
+    <string name="lastweek">一周前</string>
+    <string name="lastmonth">一月前</string>
+    <string name="price">价格</string>
+    <string name="remark">评论</string>
 </resources>

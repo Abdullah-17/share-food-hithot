@@ -40,9 +40,9 @@ public class MapPointChooseActivity extends MapActivity {
 		mapView = (MapView) findViewById(R.id.main_mapView);
 		mc = mapView.getController();
 		int lastLat = PreferenceUtil.getSettingInt(Constant.LASTLAT,
-				(int) (39.906033 * 1E6));
+				(int) (39.98237 * 1E6));
 		int lastLon = PreferenceUtil.getSettingInt(Constant.LASTLON,
-				(int) (116.397695 * 1E6));
+				(int) (116.304923 * 1E6));
 		GeoPoint point = new GeoPoint(lastLat, lastLon); // 用给定的经纬度构造一个GeoPoint，单位是微度
 		// (度 * 1E6)
 		mapView.setBuiltInZoomControls(true); // 设置启用内置的缩放控件

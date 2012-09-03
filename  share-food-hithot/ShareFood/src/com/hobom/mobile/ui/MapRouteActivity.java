@@ -36,6 +36,7 @@ import com.amap.mapapi.location.LocationManagerProxy;
 import com.amap.mapapi.map.MapActivity;
 import com.amap.mapapi.map.MapController;
 import com.amap.mapapi.map.MapView;
+import com.amap.mapapi.map.MyLocationOverlay;
 import com.amap.mapapi.map.RouteMessageHandler;
 import com.amap.mapapi.map.RouteOverlay;
 import com.amap.mapapi.poisearch.PoiPagedResult;
@@ -49,9 +50,10 @@ import com.hobom.mobile.util.ActivityStackManager;
 import com.hobom.mobile.util.Constant;
 import com.hobom.mobile.util.PreferenceUtil;
 
-public class MapRouteActivity extends MapActivity implements LocationListener, RouteMessageHandler {
-	
-	private final static String TAG ="MapRouteActivity";
+public class MapRouteActivity extends MapActivity implements
+		RouteMessageHandler {
+
+	private final static String TAG = "MapRouteActivity";
 	public static final String FROM_TYPE = "fromType";
 	public static final int FROM_MAP = 1;
 	public static final int FROM_POSITION = 2;
@@ -81,7 +83,7 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 	private Intent intent;
 	private final int REQUEST_CHOOSEPOINT = 0;
 	private final int REQUEST_FAV = 1;
-	private LocationManagerProxy locationManager = null;
+
 	private boolean changeByHand = true;
 	private MapPointOverlay overlay;
 	private String poiType;
@@ -91,53 +93,53 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 	private GeoPoint currentPos;
 	private PoiPagedResult startSearchResult;
 	private PoiPagedResult endSearchResult;
-	private GeoPoint startPoint=null;
-	private GeoPoint endPoint=null;
-    private MapView mMapView;
-    private MapController mMapController;
-   private TextView driveView,busView;
+	private GeoPoint startPoint = null;
+	private GeoPoint endPoint = null;
+	private MapView mMapView;
+	private MapController mMapController;
+	private TextView driveView, busView;
+	private MyLocationOverlay mLocationOverlay;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.tab_bg_map_route);
 		ActivityStackManager.getInstance().addActivity(this);
-		locationManager = LocationManagerProxy.getInstance(this);
-		
 
-	}
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		Log.i(TAG, "onResume");
-		super.onResume();
 		init();
-		enableMyLocation();
+
+		mLocationOverlay = new MyLocationOverlay(this, mMapView);
+
+		mMapView.getOverlays().add(mLocationOverlay);
+		mLocationOverlay.runOnFirstFix(new Runnable() {
+			public void run() {
+				routeHandler.sendMessage(Message.obtain(routeHandler,
+						Constant.FIRST_LOCATION));
+			}
+		});
 	}
 
 	@Override
 	protected void onPause() {
-		disableMyLocation();
+		this.mLocationOverlay.disableMyLocation();
+		this.mLocationOverlay.disableCompass();
 		super.onPause();
 	}
 
 	@Override
-	protected void onDestroy() {
-		if (locationManager != null) {
-			locationManager.removeUpdates(this);
-			locationManager.destory();
-		}
-		locationManager = null;
-		super.onDestroy();
+	protected void onResume() {
+		this.mLocationOverlay.enableMyLocation();
+		this.mLocationOverlay.enableCompass();
+		super.onResume();
 	}
-	
-	
+
 	public void init() {
 
 		driveView = (TextView) findViewById(R.id.tab_drive_route);
 		busView = (TextView) findViewById(R.id.tab_bus_change);
-		mMapView = (MapView)findViewById(R.id.route_MapView);
-		busView.setOnClickListener(new OnClickListener(){
+		mMapView = (MapView) findViewById(R.id.route_MapView);
+		busView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -148,9 +150,9 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 				busView.setTextColor(R.color.blue);
 				driveView.setTextColor(R.drawable.tab_textview_color);
 			}
-			
+
 		});
-		driveView.setOnClickListener(new OnClickListener(){
+		driveView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -161,16 +163,18 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 				driveView.setTextColor(R.color.blue);
 				busView.setTextColor(R.drawable.tab_textview_color);
 			}
-			
+
 		});
-		mMapController = mMapView.getController();  // 得到mMapView的控制权,可以用它控制和驱动平移和缩放
+
+		mMapController = mMapView.getController(); // 得到mMapView的控制权,可以用它控制和驱动平移和缩放
+		mMapView.setBuiltInZoomControls(true);
 		int lastLat = PreferenceUtil.getSettingInt(Constant.LASTLAT,
-				(int) (39.906033 * 1E6));
+				(int) (39.98237 * 1E6));
 		int lastLon = PreferenceUtil.getSettingInt(Constant.LASTLON,
-				(int) (116.397695 * 1E6));
+				(int) (116.304923 * 1E6));
 		GeoPoint point = new GeoPoint(lastLat, lastLon); // 用给定的经纬度构造一个GeoPoint，单位是微度
-		mMapController.setCenter(point);  //设置地图中心点
-		mMapController.setZoom(12);    //设置地图zoom级别
+		mMapController.setCenter(point); // 设置地图中心点
+		mMapController.setZoom(12); // 设置地图zoom级别
 		driveRouteStartEdit = (EditText) findViewById(R.id.driveroute_start_place_edit);
 		driveRouteDestEdit = (EditText) findViewById(R.id.driveroute_dest_place_edit);
 		if (!TextUtils.isEmpty(MapRouteActivity.endName)) {
@@ -201,40 +205,37 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 		driveRouteDestEdit.addTextChangedListener(new TextChanger(1));
 	}
 
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (data != null) {
 			if (requestCode == REQUEST_CHOOSEPOINT) {
 				startEndType = data.getIntExtra("mapMode", 0);
-				
 
-			    GeoPoint g = (GeoPoint) data.getParcelableExtra("LonLat");
-				
-					if (startEndType == MapPointChooseActivity.MODE_CHOOSE_START) {
-						if (driveRouteStartEdit != null) {
-							changeByHand = false;
-							driveRouteStartEdit.setText("地图上的点");
-							changeByHand = true;
-							MapRouteActivity.startLon = g.getLongitudeE6();
-							MapRouteActivity.startLat = g.getLatitudeE6();
-							MapRouteActivity.startName = "地图上的点";
-							startPoint = g;
-						}
+				GeoPoint g = (GeoPoint) data.getParcelableExtra("LonLat");
 
-					} else if (startEndType == MapPointChooseActivity.MODE_CHOOSE_END) {
-						if (driveRouteDestEdit != null) {
-							changeByHand = false;
-							driveRouteDestEdit.setText("地图上的点");
-							changeByHand = true;
-							MapRouteActivity.endLon = g.getLongitudeE6();
-							MapRouteActivity.endLat = g.getLatitudeE6();
-							MapRouteActivity.endName = "地图上的点";
-							endPoint = g;
-						}
+				if (startEndType == MapPointChooseActivity.MODE_CHOOSE_START) {
+					if (driveRouteStartEdit != null) {
+						changeByHand = false;
+						driveRouteStartEdit.setText("地图上的点");
+						changeByHand = true;
+						MapRouteActivity.startLon = g.getLongitudeE6();
+						MapRouteActivity.startLat = g.getLatitudeE6();
+						MapRouteActivity.startName = "地图上的点";
+						startPoint = g;
+					}
 
-					
+				} else if (startEndType == MapPointChooseActivity.MODE_CHOOSE_END) {
+					if (driveRouteDestEdit != null) {
+						changeByHand = false;
+						driveRouteDestEdit.setText("地图上的点");
+						changeByHand = true;
+						MapRouteActivity.endLon = g.getLongitudeE6();
+						MapRouteActivity.endLat = g.getLatitudeE6();
+						MapRouteActivity.endName = "地图上的点";
+						endPoint = g;
+					}
+
 				}
 
 			}
@@ -244,8 +245,8 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 	}
 
 	public void searchRouteResult(GeoPoint startPoint, GeoPoint endPoint) {
-		progDialog = ProgressDialog.show(MapRouteActivity.this, null,
-				"正在获取线路", true, true);
+		progDialog = ProgressDialog.show(MapRouteActivity.this, null, "正在获取线路",
+				true, true);
 		final Route.FromAndTo fromAndTo = new Route.FromAndTo(startPoint,
 				endPoint);
 		Thread t = new Thread(new Runnable() {
@@ -253,31 +254,28 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 			public void run() {
 
 				try {
-				    Looper.prepare();
+					Looper.prepare();
 					routeResult = Route.calculateRoute(MapRouteActivity.this,
 							fromAndTo, mode);
-					if(progDialog.isShowing()){
-						if(routeResult!=null||routeResult.size()>0)
-						routeHandler.sendMessage(Message
-								.obtain(routeHandler, Constant.ROUTE_SEARCH_RESULT));
+					if (progDialog.isShowing()) {
+						if (routeResult != null || routeResult.size() > 0)
+							routeHandler.sendMessage(Message.obtain(
+									routeHandler, Constant.ROUTE_SEARCH_RESULT));
 					}
 				} catch (AMapException e) {
 					Message msg = new Message();
 					msg.what = Constant.ROUTE_SEARCH_ERROR;
-					msg.obj =  e.getErrorMessage();
+					msg.obj = e.getErrorMessage();
 					routeHandler.sendMessage(msg);
 				}
 				Looper.loop();
-				
+
 			}
 		});
 		t.start();
 
 	}
-	
-	
-	
-	
+
 	private View.OnClickListener driveRouteListener = new View.OnClickListener() {
 
 		@Override
@@ -314,14 +312,15 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 									Intent intent = new Intent();
 									intent.setClass(MapRouteActivity.this,
 											MapPointChooseActivity.class);
-									
-									intent.putExtra("mapMode",
+
+									intent.putExtra(
+											"mapMode",
 											MapPointChooseActivity.MODE_CHOOSE_START);
 									startActivityForResult(intent,
 											REQUEST_CHOOSEPOINT);
 
 									break;
-								
+
 								}
 							}
 						});
@@ -359,14 +358,15 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 									Intent intent = new Intent();
 									intent.setClass(MapRouteActivity.this,
 											MapPointChooseActivity.class);
-									
-									intent.putExtra("mapMode",
+
+									intent.putExtra(
+											"mapMode",
 											MapPointChooseActivity.MODE_CHOOSE_END);
 									startActivityForResult(intent,
 											REQUEST_CHOOSEPOINT);
 
 									break;
-								
+
 								}
 							}
 						});
@@ -446,7 +446,7 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 						&& (MapRouteActivity.endLon == 0 || MapRouteActivity.endLat == 0)) {
 					endSearchResult();
 				} else {
-					searchRouteResult(startPoint,endPoint);
+					searchRouteResult(startPoint, endPoint);
 				}
 				break;
 			}
@@ -455,23 +455,6 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 
 	};
 
-	public boolean enableMyLocation() {
-		boolean result = true;
-		Criteria cri = new Criteria();
-		cri.setAccuracy(Criteria.ACCURACY_COARSE);
-		cri.setAltitudeRequired(false);
-		cri.setBearingRequired(false);
-		cri.setCostAllowed(false);
-		String bestProvider = locationManager.getBestProvider(cri, true);
-		locationManager.requestLocationUpdates(bestProvider, 2000, 10, this);
-		return result;
-	}
-
-	public void disableMyLocation() {
-		locationManager.removeUpdates(this);
-	}
-	
-	
 	class TextChanger implements TextWatcher {
 
 		private String before = null;
@@ -534,73 +517,44 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 
 	private boolean checkGps(int type) {
 		Log.i(TAG, "check gps");
-		if (currentPos!=null) {
+		if (currentPos != null) {
 			if (type == 0) {
 				MapRouteActivity.startName = Constant.MYLOC;
 				MapRouteActivity.startLon = currentPos.getLatitudeE6();
 				MapRouteActivity.startLat = currentPos.getLongitudeE6();
-				startPoint = new GeoPoint(MapRouteActivity.startLat,MapRouteActivity.startLon);
-				
+				startPoint = new GeoPoint(MapRouteActivity.startLat,
+						MapRouteActivity.startLon);
+
 			} else if (type == 1) {
 				MapRouteActivity.endName = Constant.MYLOC;
 				MapRouteActivity.endLon = currentPos.getLongitudeE6();
 				MapRouteActivity.endLat = currentPos.getLatitudeE6();
-				endPoint = new GeoPoint(MapRouteActivity.endLat,MapRouteActivity.endLon);
-				
+				endPoint = new GeoPoint(MapRouteActivity.endLat,
+						MapRouteActivity.endLon);
+
 			}
 			// driveRouteCalculateBtn.setEnabled(true);
 			return true;
 
-		}  else {
-				Toast.makeText(MapRouteActivity.this, "无法获取您的位置",
-						Toast.LENGTH_LONG).show();
-				return false;
-			}
-
-		
-
-	}
-	
-	@Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-		if (location != null) {
-			Double geoLat = location.getLatitude();
-			Double geoLng = location.getLongitude();
-			currentPos = new GeoPoint((int)(geoLat*1E6),(int)(geoLng*1E6));
-			
+		} else {
+			Toast.makeText(MapRouteActivity.this, "无法获取您的位置", Toast.LENGTH_LONG)
+					.show();
+			return false;
 		}
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onDrag(MapView arg0, RouteOverlay arg1, int arg2, GeoPoint arg3) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onDragBegin(MapView arg0, RouteOverlay arg1, int arg2,
 			GeoPoint arg3) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -610,7 +564,7 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 		try {
 			startPoint = overlay.getStartPos();
 			endPoint = overlay.getEndPos();
-//			overlay.renewOverlay(mapView);
+			// overlay.renewOverlay(mapView);
 			searchRouteResult(startPoint, endPoint);
 		} catch (IllegalArgumentException e) {
 			ol.restoreOverlay(mapView);
@@ -620,23 +574,27 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 			overlayToBack(ol, mapView);
 		}
 	}
+
 	private void overlayToBack(RouteOverlay overlay, MapView mapView) {
 		startPoint = overlay.getStartPos();
 		endPoint = overlay.getEndPos();
 	}
+
 	@Override
 	public boolean onRouteEvent(MapView arg0, RouteOverlay arg1, int arg2,
 			int arg3) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 	private Handler routeHandler = new Handler() {
 		public void handleMessage(Message msg) {
 			if (msg.what == Constant.ROUTE_START_SEARCH) {
 				progDialog.dismiss();
 				try {
 					List<PoiItem> poiItems;
-					if (startSearchResult != null && (poiItems = startSearchResult.getPage(1)) != null 
+					if (startSearchResult != null
+							&& (poiItems = startSearchResult.getPage(1)) != null
 							&& poiItems.size() > 0) {
 						RouteSearchPoiDialog dialog = new RouteSearchPoiDialog(
 								MapRouteActivity.this, poiItems);
@@ -666,7 +624,8 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 				progDialog.dismiss();
 				try {
 					List<PoiItem> poiItems;
-					if (endSearchResult != null && (poiItems = endSearchResult.getPage(1)) != null 
+					if (endSearchResult != null
+							&& (poiItems = endSearchResult.getPage(1)) != null
 							&& poiItems.size() > 0) {
 						RouteSearchPoiDialog dialog = new RouteSearchPoiDialog(
 								MapRouteActivity.this, poiItems);
@@ -694,11 +653,8 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 
 			} else if (msg.what == Constant.ROUTE_SEARCH_RESULT) {
 				progDialog.dismiss();
-				if (routeResult != null && routeResult.size()>0) {
-					setContentView(R.layout.simplemap);
-					mMapView = (MapView)findViewById(R.id.mapView);
+				if (routeResult != null && routeResult.size() > 0) {
 					Route route = routeResult.get(0);
-					
 					if (route != null) {
 						if (ol != null) {
 							ol.removeFromMap(mMapView);
@@ -709,30 +665,35 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 						ArrayList<GeoPoint> pts = new ArrayList<GeoPoint>();
 						pts.add(route.getLowerLeftPoint());
 						pts.add(route.getUpperRightPoint());
-						mMapView.getController().setFitView(pts);//调整地图显示范围
+						mMapView.getController().setFitView(pts);// 调整地图显示范围
 						mMapView.invalidate();
 					}
 				}
 			} else if (msg.what == Constant.ROUTE_SEARCH_ERROR) {
 				progDialog.dismiss();
-				showToast((String)msg.obj);
+				showToast((String) msg.obj);
+			}else if(msg.what == Constant.FIRST_LOCATION){
+				mMapController.animateTo(mLocationOverlay.getMyLocation());
+
+				currentPos = mLocationOverlay.getMyLocation();
+			
 			}
 		}
 	};
-	
+
 	public void showToast(String showString) {
 		Toast.makeText(getApplicationContext(), showString, Toast.LENGTH_SHORT)
 				.show();
 	}
-	
-	
+
 	// 查询路径规划起点
 	public void startSearchResult() {
 		startKeyword = driveRouteStartEdit.getText().toString().trim();
-		if(startPoint!=null&&startKeyword.equals("地图上的点")){
+		if (startPoint != null && startKeyword.equals("地图上的点")) {
 			endSearchResult();
-		}else{
-			final Query startQuery = new Query(startKeyword, PoiTypeDef.All, "010");
+		} else {
+			final Query startQuery = new Query(startKeyword, PoiTypeDef.All,
+					"010");
 			progDialog = ProgressDialog.show(MapRouteActivity.this, null,
 					"正在搜索您所需信息...", true, true);
 			Thread t = new Thread(new Runnable() {
@@ -740,19 +701,21 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 				public void run() {
 					Looper.prepare();
 					// 调用搜索POI方法
-					PoiSearch poiSearch = new PoiSearch(MapRouteActivity.this, startQuery); // 设置搜索字符串
+					PoiSearch poiSearch = new PoiSearch(MapRouteActivity.this,
+							startQuery); // 设置搜索字符串
 					try {
 						startSearchResult = poiSearch.searchPOI();
-						if(progDialog.isShowing()){
-							routeHandler.sendMessage(Message.obtain(routeHandler,
-									Constant.ROUTE_START_SEARCH));
-					}
+						if (progDialog.isShowing()) {
+							routeHandler.sendMessage(Message.obtain(
+									routeHandler, Constant.ROUTE_START_SEARCH));
+						}
 					} catch (AMapException e) {
 						Message msg = new Message();
 						msg.what = Constant.ROUTE_SEARCH_ERROR;
-						msg.obj =  e.getErrorMessage();
+						msg.obj = e.getErrorMessage();
 						routeHandler.sendMessage(msg);
-					} 
+					}
+
 					Looper.loop();
 				}
 
@@ -760,34 +723,35 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 			t.start();
 		}
 	}
-	
+
 	// 查询路径规划终点
 	public void endSearchResult() {
-		
+
 		endKeyword = driveRouteDestEdit.getText().toString().trim();
-		if(endPoint!=null&&endKeyword.equals("地图上的点")){
-			searchRouteResult(startPoint,endPoint);
-		}else{
+		if (endPoint != null && endKeyword.equals("地图上的点")) {
+			searchRouteResult(startPoint, endPoint);
+		} else {
 			final Query endQuery = new Query(endKeyword, PoiTypeDef.All, "010");
-	        progDialog = ProgressDialog.show(MapRouteActivity.this, null,
+			progDialog = ProgressDialog.show(MapRouteActivity.this, null,
 					"正在搜索您所需信息...", true, false);
 			Thread t = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					Looper.prepare();
-					PoiSearch poiSearch = new PoiSearch(MapRouteActivity.this,endQuery); // 设置搜索字符串
+					PoiSearch poiSearch = new PoiSearch(MapRouteActivity.this,
+							endQuery); // 设置搜索字符串
 					try {
 						endSearchResult = poiSearch.searchPOI();
-						if(progDialog.isShowing()){
-						 routeHandler.sendMessage(Message.obtain(routeHandler,
-								Constant.ROUTE_END_SEARCH));
+						if (progDialog.isShowing()) {
+							routeHandler.sendMessage(Message.obtain(
+									routeHandler, Constant.ROUTE_END_SEARCH));
 						}
 					} catch (AMapException e) {
 						Message msg = new Message();
 						msg.what = Constant.ROUTE_SEARCH_ERROR;
-						msg.obj =  e.getErrorMessage();
+						msg.obj = e.getErrorMessage();
 						routeHandler.sendMessage(msg);
-					} 
+					}
 					Looper.loop();
 				}
 
@@ -795,7 +759,5 @@ public class MapRouteActivity extends MapActivity implements LocationListener, R
 			t.start();
 		}
 	}
-	
-	
 
 }

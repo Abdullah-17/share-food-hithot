@@ -1,5 +1,8 @@
 package com.hobom.mobile.db;
 
+import com.hobom.mobile.db.DatabaseColumns.ConsumeColumn;
+import com.hobom.mobile.db.DatabaseColumns.FoodColumn;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,11 +18,32 @@ public class DatabaseAccessor {
 	private SQLiteDatabase db = null;
 	
 	public interface Tables{
-    	String INSPECTION ="inspection";
-    	String CHECKLIST ="checklist";
+    	String FOOD ="food";
+    	String CONSUME ="consume";
     }
 
 	          
+	final String CREATE_FOOD =
+		"CREATE TABLE IF NOT EXISTS " + Tables.FOOD
+		+ " (" + FoodColumn._ID +" INTEGER PRIMARY KEY,"
+		+ FoodColumn.NAME +  "TEXT ,"
+		+ FoodColumn.ADDRESS + " TEXT ,"
+		+ FoodColumn.LAT + " INTEGER ,"
+		+ FoodColumn.LON + " INTEGER ,"
+		+ FoodColumn.PRICE + " TEXT ,"
+		+ FoodColumn.RATING + " INTEGER ,"
+		+ FoodColumn.PICPATH + " TEXT)"
+		
+		;
+	
+	final String CREATE_CONSUME = 
+		" CREATE TABLE IF NOT EXISTS "+ Tables.CONSUME
+		+ " (" +ConsumeColumn._ID +" INTEGER PRIMARY KEY,"
+		+ ConsumeColumn.FOODID + " INTEGER ,"
+		+ ConsumeColumn.DATE +" INTEGER ,"
+	    + ConsumeColumn.COMMENT +" TEXT )"
+	    ;
+	
 	public DatabaseAccessor(Context context) {
 		
 		dbHelper = new DatabaseHelper(context);
@@ -35,6 +59,9 @@ public class DatabaseAccessor {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 		
+			db.execSQL(CREATE_FOOD);
+			db.execSQL(CREATE_CONSUME);
+			
 			
 			
 
@@ -43,7 +70,8 @@ public class DatabaseAccessor {
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		
-
+            db.execSQL("drop table if exists " + Tables.FOOD);
+            db.execSQL("drop table if exists " + Tables.CONSUME);
 			onCreate(db);
 		
 

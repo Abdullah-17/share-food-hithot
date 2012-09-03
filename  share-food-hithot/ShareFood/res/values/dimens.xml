@@ -1,0 +1,14 @@
+<resources>
+
+
+    <dimen name="body_padding_medium">10dp</dimen>
+    <dimen name="body_padding_large">10dp</dimen>
+    <dimen name="text_size_content">13sp</dimen>
+    <dimen name="text_size_list">16sp</dimen>
+    <dimen name="text_size_list_small">15sp</dimen>
+    <dimen name="text_size_index_small">11sp</dimen>
+    <dimen name="text_size_title">17sp</dimen>
+    <dimen name="text_size_titlebtn">12sp</dimen>
+    <dimen name="text_size_bottombtn">13sp</dimen>
+	<dimen name="list_height">50dip</dimen>
+</resources>
