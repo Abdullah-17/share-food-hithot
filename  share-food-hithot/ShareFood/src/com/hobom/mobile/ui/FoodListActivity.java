@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,7 +21,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.hobom.mobile.R;
+import com.hobom.mobile.db.DatabaseAccessor;
+import com.hobom.mobile.db.DatabaseAccessor.Tables;
+import com.hobom.mobile.db.DatabaseColumns.ConsumeColumn;
+import com.hobom.mobile.db.DatabaseColumns.FoodColumn;
+import com.hobom.mobile.model.Consume;
 import com.hobom.mobile.model.Food;
+import com.hobom.mobile.model.FoodType;
+import com.hobom.mobile.util.TimeUtil;
 import com.hobom.mobile.util.ViewUtils;
 import com.hobom.mobile.widgets.CommonTitleView;
 import com.hobom.mobile.widgets.MyListView;
@@ -31,18 +39,18 @@ public class FoodListActivity extends Activity implements OnClickListener{
 	private View lastMonthEmptyView;
 	private MyListView lastMonthListView;
 	private View lastMonthFooterView;
-	private ArrayList<Food>lastMonthFoodDatas = new ArrayList<Food>();
-	private ArrayList<Food>lastMonthFinalFoodDatas = new ArrayList<Food>();
+	private ArrayList<Consume>lastMonthFoodDatas = new ArrayList<Consume>();
+	private ArrayList<Consume>lastMonthFinalFoodDatas = new ArrayList<Consume>();
 	private View lastWeekEmptyView;
 	private MyListView lastWeekListView;
 	private View lastWeekFooterView;
-	private ArrayList<Food>lastWeekFoodDatas = new ArrayList<Food>();
-	private ArrayList<Food>lastWeekFinalFoodDatas = new ArrayList<Food>();
+	private ArrayList<Consume>lastWeekFoodDatas = new ArrayList<Consume>();
+	private ArrayList<Consume>lastWeekFinalFoodDatas = new ArrayList<Consume>();
 	private View thisWeekEmptyView;
 	private MyListView thisWeekListView;
 	private View thisWeekFooterView;
-	private ArrayList<Food>thisWeekFoodDatas = new ArrayList<Food>();
-	private ArrayList<Food>thisWeekFinalFoodDatas = new ArrayList<Food>();
+	private ArrayList<Consume>thisWeekFoodDatas = new ArrayList<Consume>();
+	private ArrayList<Consume>thisWeekFinalFoodDatas = new ArrayList<Consume>();
 	private RelativeLayout mSearchBox;
 	private RelativeLayout mSearchPanel;
 	private ImageView mSearchPanelImg;
@@ -50,13 +58,16 @@ public class FoodListActivity extends Activity implements OnClickListener{
 	private View lastWeekTitle,thisWeekTitle,lastMonthTitle;
 	private FoodAdapter lastMonthFoodAdapter,lastWeekFoodAdapter,thisWeekFoodAdapter;
 	private ProgressDialog mProgressDialog;
-	
+	private DatabaseAccessor accessor;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.foodlist);
+		
 		init();
+		accessor = new DatabaseAccessor(this);
+		loadData();
 	}
 	
 	private void init(){
@@ -158,11 +169,11 @@ public class FoodListActivity extends Activity implements OnClickListener{
 						}
 						thisWeekFoodAdapter.notifyDataSetChanged();
 					}else{
-						List<Food> plist = new ArrayList<Food>();
+						List<Consume> plist = new ArrayList<Consume>();
 						for (int i = 0; i < lastMonthFinalFoodDatas.size(); i++) {
-							Food order = lastMonthFinalFoodDatas.get(i);
-
-							if (order.getName().indexOf(key) >= 0) {
+							Consume order = lastMonthFinalFoodDatas.get(i);
+                              
+							if (order.getFood().getName().indexOf(key) >= 0) {
 								plist.add(order);
 							}
 						}
@@ -174,10 +185,10 @@ public class FoodListActivity extends Activity implements OnClickListener{
 						lastMonthFoodAdapter.notifyDataSetChanged();
 
 						
-						List<Food> clist = new ArrayList<Food>();
+						List<Consume> clist = new ArrayList<Consume>();
 						for (int i = 0; i < lastWeekFinalFoodDatas.size(); i++) {
-							Food order = lastWeekFinalFoodDatas.get(i);
-							if (order.getName().indexOf(key) >= 0) {
+							Consume order = lastWeekFinalFoodDatas.get(i);
+							if (order.getFood().getName().indexOf(key) >= 0) {
 								clist.add(order);
 							}
 						}
@@ -187,10 +198,10 @@ public class FoodListActivity extends Activity implements OnClickListener{
 						}
 						lastWeekFoodAdapter.notifyDataSetChanged();
 
-						List<Food> slist = new ArrayList<Food>();
+						List<Consume> slist = new ArrayList<Consume>();
 						for (int i = 0; i < thisWeekFinalFoodDatas.size(); i++) {
-							Food order = thisWeekFinalFoodDatas.get(i);
-							if (order.getName().indexOf(key) >= 0) {
+							Consume order = thisWeekFinalFoodDatas.get(i);
+							if (order.getFood().getName().indexOf(key) >= 0) {
 								slist.add(order);
 							}
 						}
@@ -321,13 +332,62 @@ public class FoodListActivity extends Activity implements OnClickListener{
 	
 	
 	
-	private void viewFoodDetail(Food food){
+	
+	
+	private void loadData(){
+		
+		long weekStart = TimeUtil.getWeekStart();
+		long lastMonthStart = TimeUtil.getLastMonthStart();
+		
+		Cursor thisWeekCursor = accessor.query(true, Tables.CONSUME, null, ConsumeColumn.DATE+" >=?", new String[]{String.valueOf(weekStart)}, null, null, null, null);
+		
+		int foodId = 0;
+		long consumeDate = 0;
+		
+		Consume consume = null;
+		Food food = null;
+		if(thisWeekCursor.moveToNext()){
+			  
+			foodId = thisWeekCursor.getInt(thisWeekCursor.getColumnIndex(ConsumeColumn.FOODID));
+			
+			
+			Cursor foodCursor = accessor.query(true, Tables.FOOD, null, ""+FoodColumn._ID+" = ?" , new String[]{String.valueOf(foodId)}, 	null, null, null, null);
+			if(foodCursor.moveToFirst()){
+				String name = foodCursor.getString(foodCursor.getColumnIndex(FoodColumn.NAME));
+				String address = foodCursor.getString(foodCursor.getColumnIndex(FoodColumn.ADDRESS));
+				String price = foodCursor.getString(foodCursor.getColumnIndex(FoodColumn.PRICE));
+				int lat = foodCursor.getInt(foodCursor.getColumnIndex(FoodColumn.LAT));
+				int lon = foodCursor.getInt(foodCursor.getColumnIndex(FoodColumn.LON));
+				String type = foodCursor.getString(foodCursor.getColumnIndex(FoodColumn.TYPE));
+				food = new Food();
+				food.setName(name);
+				food.setAddress(address);
+				food.setPrice(Float.parseFloat(price));
+				food.setLatitude(lat);
+				food.setLongitude(lon);
+				food.setType(FoodType.valueOf(type));
+			}
+			
+			
+			
+		}
+		
+		if(thisWeekCursor!=null){
+			thisWeekCursor.close();
+			thisWeekCursor = null;
+			
+		}
+	}
+	
+	private void viewFoodDetail(Consume food){
 		Intent intent = new Intent();
 		intent.setClass(this, FoodDetailInfoActivity.class);
 		intent.putExtra("food", food);
 		startActivity(intent);
 	}
+	
 
+	
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub

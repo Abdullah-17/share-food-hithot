@@ -8,4 +8,7 @@ public enum FoodType {
 		this.name = name;
 	}
 	private String name;
+	public String getName(){
+		return name;
+	}
 }

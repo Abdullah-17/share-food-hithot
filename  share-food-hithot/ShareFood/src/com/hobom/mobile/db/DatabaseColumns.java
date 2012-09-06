@@ -23,8 +23,7 @@ public class DatabaseColumns {
 		final static String LON ="longitude";
 		final static String TYPE ="type";
 		final static String PRICE ="price";
-		final static String PICPATH ="path";
-		final static String  RATING =  "rating";
+	
 		
 	}
 	/**
@@ -36,5 +35,7 @@ public class DatabaseColumns {
 		final static String FOODID ="foodId";
 		final static String DATE = "date";
 		final static String COMMENT  ="remark";
+		final static String PICPATH ="path";
+		final static String  RATING =  "rating";
 	}
 }

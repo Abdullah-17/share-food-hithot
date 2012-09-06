@@ -33,7 +33,9 @@
     <color name="poi_name_pressed_color">#FEFEFF</color> 
     <color name="road_name_color">#AAA5A5</color>
     <color name="road_line_color">#E1DDDD</color>
-    
+    	
+    <color name="full_transparent">#00000000</color>
+    <color name="half_transparent">#aa000000</color>
     
     <color name="map_bg">#7D7D7D</color>
     

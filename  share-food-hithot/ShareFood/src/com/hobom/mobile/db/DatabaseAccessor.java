@@ -30,9 +30,8 @@ public class DatabaseAccessor {
 		+ FoodColumn.ADDRESS + " TEXT ,"
 		+ FoodColumn.LAT + " INTEGER ,"
 		+ FoodColumn.LON + " INTEGER ,"
-		+ FoodColumn.PRICE + " TEXT ,"
-		+ FoodColumn.RATING + " INTEGER ,"
-		+ FoodColumn.PICPATH + " TEXT)"
+		+ FoodColumn.PRICE + " TEXT )"
+	
 		
 		;
 	
@@ -41,7 +40,9 @@ public class DatabaseAccessor {
 		+ " (" +ConsumeColumn._ID +" INTEGER PRIMARY KEY,"
 		+ ConsumeColumn.FOODID + " INTEGER ,"
 		+ ConsumeColumn.DATE +" INTEGER ,"
-	    + ConsumeColumn.COMMENT +" TEXT )"
+	    + ConsumeColumn.COMMENT +" TEXT ,"
+		+ ConsumeColumn.RATING + " INTEGER ,"
+		+ ConsumeColumn.PICPATH + " TEXT)"
 	    ;
 	
 	public DatabaseAccessor(Context context) {

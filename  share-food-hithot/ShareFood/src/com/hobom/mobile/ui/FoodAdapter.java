@@ -14,14 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hobom.mobile.R;
+import com.hobom.mobile.model.Consume;
 import com.hobom.mobile.model.Food;
 
-public class FoodAdapter extends ArrayAdapter<Food> {
+public class FoodAdapter extends ArrayAdapter<Consume> {
 
-	private ArrayList<Food>foodData;
+	private ArrayList<Consume>foodData;
 	private LayoutInflater inflater;
 	private Context context;
-	public FoodAdapter(Context context, ArrayList<Food>list) {
+	public FoodAdapter(Context context, ArrayList<Consume>list) {
 		super(context, R.layout.foodlist_item);
 		// TODO Auto-generated constructor stub
 		this.context = context;
@@ -34,7 +35,7 @@ public class FoodAdapter extends ArrayAdapter<Food> {
 		return foodData.size();
 	}
 	@Override
-	public Food getItem(int position) {
+	public Consume getItem(int position) {
 		// TODO Auto-generated method stub
 		return foodData.get(position);
 	}
@@ -47,7 +48,8 @@ public class FoodAdapter extends ArrayAdapter<Food> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
-		Food food = getItem(position);
+		Consume consume = getItem(position);
+		Food food = consume.getFood();
 		if(convertView==null){
 			convertView = inflater.inflate(R.layout.foodlist_item, null);
 			
