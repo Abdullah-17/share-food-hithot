@@ -28,18 +28,7 @@ public class Food implements Serializable{
 	 * 经度
 	 */
 	private int longitude;
-	/**
-	 * 图片路径
-	 */
-	private String picPath;
-	/**
-	 * 等级
-	 */
-	private int rating;
-	/**
-	 * 评论
-	 */
-	private String remark;
+	
 	public String getName() {
 		return name;
 	}
@@ -64,23 +53,17 @@ public class Food implements Serializable{
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getPicPath() {
-		return picPath;
+	public int getLatitude() {
+		return latitude;
 	}
-	public void setPicPath(String picPath) {
-		this.picPath = picPath;
+	public void setLatitude(int latitude) {
+		this.latitude = latitude;
 	}
-	public int getRating() {
-		return rating;
+	public int getLongitude() {
+		return longitude;
 	}
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
-	public String getRemark() {
-		return remark;
-	}
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setLongitude(int longitude) {
+		this.longitude = longitude;
 	}
 	
 	
