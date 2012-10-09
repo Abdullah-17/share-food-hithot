@@ -11,7 +11,7 @@ public class Food implements Serializable{
 	/**
 	 * 美食类别
 	 */
-	private FoodType type;
+	private String type;
 	/**
 	 * 价格
 	 */
@@ -28,6 +28,7 @@ public class Food implements Serializable{
 	 * 经度
 	 */
 	private int longitude;
+	private String telephone;
 	
 	public String getName() {
 		return name;
@@ -35,10 +36,10 @@ public class Food implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public FoodType getType() {
+	public String getType() {
 		return type;
 	}
-	public void setType(FoodType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	public float getPrice() {
@@ -65,6 +66,13 @@ public class Food implements Serializable{
 	public void setLongitude(int longitude) {
 		this.longitude = longitude;
 	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	
 	
 	
 	

@@ -34,7 +34,7 @@ import android.webkit.CookieSyncManager;
  * getAccessToken, 3. url request. Used as a single instance class. Implements a
  * weibo api as a synchronized way.
  * 
- * @author ZhangJie (zhangjie2@staff.sina.com.cn)
+ * @author (luopeng@staff.sina.com.cn zhangjie2@staff.sina.com.cn 官方微博：WBSDK  http://weibo.com/u/2791136085)
  */
 public class Weibo {
 
@@ -220,32 +220,31 @@ public class Weibo {
         return accessToken;
     }
 
-    /*--没有用到ShareActivity--*/
-//    /**
-//     * Share text content or image to weibo .
-//     * 
-//     */
-//    public boolean share2weibo(Activity activity, String accessToken, String tokenSecret,
-//            String content, String picPath) throws WeiboException {
-//        if (TextUtils.isEmpty(accessToken)) {
-//            throw new WeiboException("token can not be null!");
-//        }
-//        // else if (TextUtils.isEmpty(tokenSecret)) {
-//        // throw new WeiboException("secret can not be null!");
-//        // }
-//
-//        if (TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)) {
-//            throw new WeiboException("weibo content can not be null!");
-//        }
-//        Intent i = new Intent(activity, ShareActivity.class);
-//        i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
-//        i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
-//        i.putExtra(ShareActivity.EXTRA_WEIBO_CONTENT, content);
-//        i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
-//        activity.startActivity(i);
-//
-//        return true;
-//    }
+    /**
+     * Share text content or image to weibo .
+     * 
+     */
+    public boolean share2weibo(Activity activity, String accessToken, String tokenSecret,
+            String content, String picPath) throws WeiboException {
+        if (TextUtils.isEmpty(accessToken)) {
+            throw new WeiboException("token can not be null!");
+        }
+        // else if (TextUtils.isEmpty(tokenSecret)) {
+        // throw new WeiboException("secret can not be null!");
+        // }
+
+        if (TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)) {
+            throw new WeiboException("weibo content can not be null!");
+        }
+        Intent i = new Intent(activity, ShareActivity.class);
+        i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
+        i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
+        i.putExtra(ShareActivity.EXTRA_WEIBO_CONTENT, content);
+        i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
+        activity.startActivity(i);
+
+        return true;
+    }
 
     private boolean startSingleSignOn(Activity activity, String applicationId,
             String[] permissions, int activityCode) {
@@ -362,22 +361,4 @@ public class Weibo {
         }
         return false;
     }
-    
-    /*-------------------------New Code----------------------------*/
-    /**
-     * 分享到微博
-     */
-    public boolean shareToweibo(Activity activity, String accessToken, String tokenSecret, String content) throws WeiboException {
-    	Utility.setAuthorization(new Oauth2AccessTokenHeader());
-    	WeiboParameters bundle = new WeiboParameters();
-        bundle.add("source", APP_KEY);
-        bundle.add("status", content);
-        String url = SERVER + "statuses/update.json";
-        if(mAccessToken == null){
-        	mAccessToken = new AccessToken(accessToken, tokenSecret);
-        }
-        request(activity, url, bundle, Utility.HTTPMETHOD_POST, mAccessToken);
-        return true;
-    }
-    /*------------------------------------------------------------*/
 }

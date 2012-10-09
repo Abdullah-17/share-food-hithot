@@ -13,7 +13,7 @@ import android.util.Log;
 public class DatabaseAccessor {
 	private static final String TAG = "[DatabaseAccessor]";
     private static final String DATABASENAME ="food.db";
-	private final static int VERSION = 1;
+	private final static int VERSION = 3;
 	private DatabaseHelper dbHelper = null;
 	private SQLiteDatabase db = null;
 	
@@ -26,13 +26,14 @@ public class DatabaseAccessor {
 	final String CREATE_FOOD =
 		"CREATE TABLE IF NOT EXISTS " + Tables.FOOD
 		+ " (" + FoodColumn._ID +" INTEGER PRIMARY KEY,"
-		+ FoodColumn.NAME +  "TEXT ,"
+		+ FoodColumn.NAME +  " TEXT ,"
 		+ FoodColumn.ADDRESS + " TEXT ,"
+		+ FoodColumn.TYPE +" TEXT ,"
 		+ FoodColumn.LAT + " INTEGER ,"
 		+ FoodColumn.LON + " INTEGER ,"
-		+ FoodColumn.PRICE + " TEXT )"
-	
-		
+		+ FoodColumn.PRICE + " decimal(8,3), " 
+		+ FoodColumn.TEL +" TEXT)"
+				
 		;
 	
 	final String CREATE_CONSUME = 

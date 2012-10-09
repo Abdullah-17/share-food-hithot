@@ -45,4 +45,8 @@
 	<color name="translucent_background">#50000000</color>
 	<color name="poi_background">#5898BD</color>
 	<color name="describe_title_background">#1873A8</color>
+	
+	  <color name="transparent">#00000000</color>
+    <color name="text_num_gray">#333</color>
+    <color name="dialog_title_blue">#9CCCF7</color>
 </resources>

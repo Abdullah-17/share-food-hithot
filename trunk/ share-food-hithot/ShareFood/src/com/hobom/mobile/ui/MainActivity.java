@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.hobom.mobile.R;
+import com.hobom.mobile.util.ActivityStackManager;
+import com.hobom.mobile.util.ExitAlertDialog;
 import com.hobom.mobile.widgets.TabButton;
 
 public class MainActivity extends TabActivity {
@@ -62,27 +65,26 @@ public class MainActivity extends TabActivity {
 
 		Intent intent;
 
-		intent = new Intent().setClass(this, FoodMapActivity.class);
+		intent = new Intent().setClass(this, MapGroup.class);
 
-		addCustomTab(0, mTabhost, "地图", R.drawable.icon_list_off,
-				R.drawable.icon_list_on, "map", intent);
+		addCustomTab(0, mTabhost, "地图", R.drawable.icon_more_off,
+				R.drawable.icon_more_on, "map", intent);
 
 		intent = new Intent().setClass(this, FoodListActivity.class);
-		addCustomTab(1, mTabhost, "美食", R.drawable.icon_list_off,
+		addCustomTab(1, mTabhost, "记录", R.drawable.icon_list_off,
 				R.drawable.icon_list_on, "list", intent);
 
 		intent = new Intent().setClass(this, CameraActivity.class);
 		//
-		addCustomTab(2, mTabhost, "拍照", R.drawable.icon_search_off,
+		addCustomTab(2, mTabhost, "浏览", R.drawable.icon_search_off,
 				R.drawable.icon_search_on, "camera", intent);
-
+		intent = new Intent().setClass(this, MoreActivity.class);
+		addCustomTab(3, mTabhost, "新增", R.drawable.icon_recipe_off,
+				R.drawable.icon_recipe_on, "more", intent);
 		intent = new Intent().setClass(this, AnalysisActivity.class);
-		addCustomTab(3, mTabhost, "统计", R.drawable.icon_search_off,
-				R.drawable.icon_search_on, "analysis", intent);
-		intent = new Intent().setClass(this, MoreGroup.class);
-		addCustomTab(4, mTabhost, "更多", R.drawable.icon_more_off,
-				R.drawable.icon_more_on, "more", intent);
-
+		addCustomTab(4, mTabhost, "统计", R.drawable.icon_stores_off,
+				R.drawable.icon_stores_on, "analysis", intent);
+		
 		mTabhost.setOnTabChangedListener(new OnTabChangeListener() {
 
 			@Override
@@ -165,6 +167,17 @@ public class MainActivity extends TabActivity {
 		
 			mapAct.doSearchQuery(newIntent);
 		}
+	}
+
+	
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		// TODO Auto-generated method stub
+		if(event.getKeyCode()==KeyEvent.KEYCODE_BACK&&event.getAction()==KeyEvent.ACTION_DOWN){
+			new ExitAlertDialog(this).createDialog();
+			return true;
+		}
+		return super.dispatchKeyEvent(event);
 	}
 
 }

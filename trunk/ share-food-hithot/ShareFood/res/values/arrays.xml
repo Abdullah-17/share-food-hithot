@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+       <string-array name="app_share_items">
+	    <item>新浪微博</item>
+	    <item>腾讯微博</item>
+    </string-array>
+      <string-array name="foodtype_items">
+	    <item>中餐</item>
+	    <item>西餐</item>
+    </string-array>
+    <string-array name="info_array">
+        <item>时间(顺序)</item>
+        <item>时间(倒序)</item>
+        <item>名称</item>
+        <item>价格</item>
+      
+    </string-array>
+</resources>

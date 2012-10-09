@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
  * A token base class contais token and secret.Whether accessToken or
  * requestToken should be as child of it.
  * 
- * @author ZhangJie (zhangjie2@staff.sina.com.cn)
+ * @author (luopeng@staff.sina.com.cn zhangjie2@staff.sina.com.cn 官方微博：WBSDK  http://weibo.com/u/2791136085)
  */
 
 public class Token {

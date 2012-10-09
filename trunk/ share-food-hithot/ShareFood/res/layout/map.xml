@@ -29,6 +29,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/map_background"
+        android:visibility="gone"
         android:orientation="horizontal" >
         
         <LinearLayout
@@ -50,22 +51,43 @@
             android:focusable="false"
             android:hint="搜索地点" />
 
-        <Button
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@+id/local"
+            android:id="@+id/groups"
+            android:visibility="gone"
+            >
+         
+        <RadioButton
+            android:text="本地"
+            android:id="@+id/local"
+            />   
+          <RadioButton
+            android:text="网络"
+            android:id="@+id/net"
+            />      
+        </RadioGroup>
+         <Button
             android:id="@+id/map_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@drawable/map_route_bg" />
 
         <Button
             android:id="@+id/map_layer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/map_layer_bg" />
+             android:visibility="gone"
+            android:background="@drawable/map_layer_bg" /> 
 
         <Button
             android:id="@+id/map_origin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+             android:visibility="gone"
             android:background="@drawable/map_origin_bg" />
     </LinearLayout>
 	
