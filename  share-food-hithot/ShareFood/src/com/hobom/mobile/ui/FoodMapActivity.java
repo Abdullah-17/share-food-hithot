@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.amap.mapapi.core.AMapException;
@@ -33,14 +36,16 @@ import com.amap.mapapi.map.MapActivity;
 import com.amap.mapapi.map.MapController;
 import com.amap.mapapi.map.MapView;
 import com.amap.mapapi.map.MyLocationOverlay;
-import com.amap.mapapi.map.RouteOverlay;
 import com.amap.mapapi.poisearch.PoiPagedResult;
 import com.amap.mapapi.poisearch.PoiSearch;
 import com.amap.mapapi.poisearch.PoiSearch.SearchBound;
 import com.amap.mapapi.poisearch.PoiTypeDef;
-import com.amap.mapapi.route.Route;
 import com.hobom.mobile.FoodApplication;
 import com.hobom.mobile.R;
+import com.hobom.mobile.db.DatabaseAccessor;
+import com.hobom.mobile.db.DatabaseAccessor.Tables;
+import com.hobom.mobile.db.DatabaseColumns.FoodColumn;
+import com.hobom.mobile.model.Food;
 import com.hobom.mobile.model.POISearchResult;
 import com.hobom.mobile.util.ActivityStackManager;
 import com.hobom.mobile.util.Connector;
@@ -85,7 +90,9 @@ public class FoodMapActivity extends MapActivity {
 	private int type = 1;
 	private final int REQUEST_SETTING_NETWORK = 100;
 	private final int REQUEST_SETTING_ACCURACY = 200;
-
+	private RadioGroup group;
+    private RadioButton local,net;
+   private FoodPoiOverlay foodPoiOverlay ;
 	private Handler checkHandler = new Handler() {
 		public void handleMessage(Message message) {
 			int what = message.what;
@@ -118,7 +125,7 @@ public class FoodMapActivity extends MapActivity {
 		super.onCreate(arg0);
 		setContentView(R.layout.map);
 		init();
-
+          
 		ActivityStackManager.getInstance().addActivity(this);
 
 		noAwaked1 = PreferenceUtil.getSettingBoolean(
@@ -159,11 +166,16 @@ public class FoodMapActivity extends MapActivity {
 		if (type == 1)
 			checkHandler.sendEmptyMessage(STEP1);
 		progDialog = new ProgressDialog(this);
+		loadFoodInfo();
 
 	}
 
 	private void init() {
 		mapView = (MapView) findViewById(R.id.main_mapView);
+
+		group = (RadioGroup)findViewById(R.id.groups);
+		local = (RadioButton)findViewById(R.id.local);
+		net = (RadioButton)findViewById(R.id.net);
 
 		// 路线
 		Button routeBtn = (Button) findViewById(R.id.map_route);
@@ -183,6 +195,7 @@ public class FoodMapActivity extends MapActivity {
 
 			@Override
 			public void onClick(View v) {
+				System.out.println("start search");
 				startSearch(null, false, null, false);
 				// FoodUtil.hideSearchIconAndLabel(FoodMapActivity.this);
 
@@ -195,6 +208,48 @@ public class FoodMapActivity extends MapActivity {
 
 	}
 
+	private void loadFoodInfo(){
+		
+		FoodApplication app = (FoodApplication)getApplication();
+		DatabaseAccessor accessor = app.getDatabase();
+		Cursor foodCursor = accessor.query(true, Tables.FOOD, null, null, null,
+				null, null, null, null);
+
+		PoiItem item = null;
+		String name,address;
+		GeoPoint gp = null;
+        List<PoiItem>poiItems = new ArrayList<PoiItem>();
+		while (foodCursor.moveToNext()) {
+			
+			    
+				address = foodCursor.getString(foodCursor
+						.getColumnIndex(FoodColumn.ADDRESS));
+				int lat = foodCursor.getInt(foodCursor
+						.getColumnIndex(FoodColumn.LAT));
+				int lon = foodCursor.getInt(foodCursor
+						.getColumnIndex(FoodColumn.LON));
+				name = foodCursor.getString(foodCursor
+						.getColumnIndex(FoodColumn.NAME));
+			    gp = new GeoPoint(lat,lon);
+			    item = new PoiItem("",gp,name,address);
+			    poiItems.add(item);
+			
+
+			}
+		
+		if(foodCursor!=null){
+			foodCursor.close();
+			foodCursor = null;
+		}
+		Drawable drawable = getResources().getDrawable(
+				R.drawable.da_marker_red);
+		if(poiItems.size()>0){
+			foodPoiOverlay = new FoodPoiOverlay(this, drawable, poiItems);
+			foodPoiOverlay.addToMap(mapView); // 将poiOverlay标注在地图上
+			foodPoiOverlay.showPopupWindow(0);
+		}
+		
+	}
 	/**
 	 * 打开网络状态对话框
 	 */

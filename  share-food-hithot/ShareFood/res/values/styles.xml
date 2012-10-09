@@ -12,4 +12,26 @@
         <item name="android:windowContentOverlay">@null</item> 
         <item name="android:backgroundDimEnabled">false</item>
 	</style>
+	
+   	
+   	  <style name="detail_cut_line">
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">2.0dip</item>
+		<item name="android:layout_marginTop">8.0dip</item>
+		<item name="android:layout_marginBottom">10.0dip</item>
+		<item name="android:layout_marginLeft">6.0dip</item>
+		<item name="android:layout_marginRight">6.0dip</item>
+		<item name="android:background">@drawable/line_bluegray</item>
+	</style>
+	<style name="main_footbar_image">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/widget_bar_bg</item>
+        <item name="android:clickable">true</item>
+    </style>
+   	<style name="main_footbar_cutline">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

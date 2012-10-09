@@ -32,6 +32,8 @@ import android.widget.RelativeLayout;
 
 import com.hobom.mobile.R;
 
+
+
 public class WeiboDialog extends Dialog {
 
     static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
@@ -87,7 +89,7 @@ public class WeiboDialog extends Dialog {
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.setHorizontalScrollBarEnabled(false);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new WeiboWebViewClient());
+        mWebView.setWebViewClient(new WeiboDialog.WeiboWebViewClient());
         mWebView.loadUrl(mUrl);
         mWebView.setLayoutParams(FILL);
         mWebView.setVisibility(View.INVISIBLE);
@@ -104,38 +106,38 @@ public class WeiboDialog extends Dialog {
         mContent.addView(webViewContainer, lp);
     }
 
-//    private void setUpCloseBtn() {
-//        mBtnClose = new ImageView(getContext());
-//        mBtnClose.setClickable(true);
-//        mBtnClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.onCancel();
-//                WeiboDialog.this.dismiss();
-//            }
-//        });
-//
-//        mBtnClose.setImageResource(R.drawable.close_selector);
-//        mBtnClose.setVisibility(View.INVISIBLE);
-//
-//        RelativeLayout.LayoutParams closeBtnRL = new RelativeLayout.LayoutParams(
-//                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//        closeBtnRL.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        closeBtnRL.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-//        closeBtnRL.topMargin = getContext().getResources().getDimensionPixelSize(
-//                R.dimen.dialog_btn_close_right_margin);
-//        closeBtnRL.rightMargin = getContext().getResources().getDimensionPixelSize(
-//                R.dimen.dialog_btn_close_top_margin);
-//
-//        webViewContainer.addView(mBtnClose, closeBtnRL);
-//    }
+    private void setUpCloseBtn() {
+        mBtnClose = new ImageView(getContext());
+        mBtnClose.setClickable(true);
+        mBtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onCancel();
+                WeiboDialog.this.dismiss();
+            }
+        });
+
+        mBtnClose.setImageResource(R.drawable.close_selector);
+        mBtnClose.setVisibility(View.INVISIBLE);
+
+        RelativeLayout.LayoutParams closeBtnRL = new RelativeLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        closeBtnRL.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        closeBtnRL.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        closeBtnRL.topMargin = getContext().getResources().getDimensionPixelSize(
+                R.dimen.dialog_btn_close_right_margin);
+        closeBtnRL.rightMargin = getContext().getResources().getDimensionPixelSize(
+                R.dimen.dialog_btn_close_top_margin);
+
+        webViewContainer.addView(mBtnClose, closeBtnRL);
+    }
 
     private class WeiboWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "Redirect URL: " + url);
-          
+            // 待后台增加对默认重定向地址的支持后修改下面的逻辑
             if (url.startsWith(mWeibo.getRedirectUrl())) {
                 handleRedirectUrl(view, url);
                 WeiboDialog.this.dismiss();
@@ -195,7 +197,7 @@ public class WeiboDialog extends Dialog {
         if (error == null && error_code == null) {
             mListener.onComplete(values);
         } else if (error.equals("access_denied")) {
-          
+            // 用户或授权服务器拒绝授予数据访问权限
             mListener.onCancel();
         } else {
             mListener.onWeiboException(new WeiboException(error, Integer.parseInt(error_code)));

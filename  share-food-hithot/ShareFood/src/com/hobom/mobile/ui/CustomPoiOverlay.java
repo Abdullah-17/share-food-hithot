@@ -55,7 +55,7 @@ public class CustomPoiOverlay extends PoiOverlay {
 		// TODO Auto-generated method stub
 		LayoutInflater inflater = (LayoutInflater) context
 		.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View v = inflater.inflate(R.layout.popup_overlay, layout);
+		View v = inflater.inflate(R.layout.popup_overlay, null);
 		textLayout = (LinearLayout) v.findViewById(R.id.textlayout);
 		textLayout2 = (LinearLayout) v.findViewById(R.id.textlayout2);
 		title = (TextView) v.findViewById(R.id.map_pop_name);
@@ -66,6 +66,8 @@ public class CustomPoiOverlay extends PoiOverlay {
 		// title.setMaxWidth(MapUtil.getScreenWidth()*3/4);
 		System.out.println("the title is:"+item.getTitle());
 		System.out.println("the address is:"+item.getSnippet());
+		nearby.setVisibility(View.GONE);
+		route.setVisibility(View.GONE);
 		if(item.getTitle()==null||item.getSnippet()==null){
 			textLayout.setVisibility(View.GONE);
 			textLayout2.setVisibility(View.VISIBLE);

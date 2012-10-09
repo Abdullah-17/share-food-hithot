@@ -1,14 +1,9 @@
 package com.hobom.mobile.model;
 
-public enum FoodType {
+public interface FoodType {
 
-	CHINESE("中餐"),
-	WEST("西餐");
-	FoodType(String name){
-		this.name = name;
-	}
-	private String name;
-	public String getName(){
-		return name;
-	}
+	public String CHINESE = "中餐";
+	
+	public String WEST = "西餐";
+
 }

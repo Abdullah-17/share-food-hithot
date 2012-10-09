@@ -17,12 +17,13 @@ public class DatabaseColumns {
 	 */
 	public interface FoodColumn  extends BaseColumns{
 		
-		final static String NAME ="name";
+		final static String NAME ="foodname";
 		final static String ADDRESS = "address";
 		final static String LAT  ="latitude";
 		final static String LON ="longitude";
 		final static String TYPE ="type";
 		final static String PRICE ="price";
+		final static String TEL = "tel";
 	
 		
 	}

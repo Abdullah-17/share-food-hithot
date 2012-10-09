@@ -71,37 +71,7 @@
                     android:paddingLeft="10dip"
                     android:paddingRight="18dip" />
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dip"
-                    android:layout_marginLeft="1dip"
-                    android:layout_marginRight="2dip"
-                    android:layout_marginTop="2dip"
-                    android:orientation="horizontal" >
-
-                    <Button
-                        android:id="@+id/map"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/btn_map_bg" />
-
-                    <Button
-                        android:id="@+id/near_by"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dip"
-                        android:background="@drawable/near_by_bg" />
-
-                    <Button
-                        android:id="@+id/to_here"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dip"
-                        android:background="@drawable/to_here_bg" />
-
-                 
-                </LinearLayout>
+               
             </LinearLayout>
 
             <LinearLayout
@@ -117,7 +87,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:numStars="5"
-                    android:rating="0" />
+                    android:stepSize="1"
+                    />
             </LinearLayout>
             
             <ImageView

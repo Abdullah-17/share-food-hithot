@@ -70,7 +70,7 @@ public class FoodAdapter extends ArrayAdapter<Consume> {
 			}
 			
 		});
-		return super.getView(position, convertView, parent);
+		return convertView;
 	}
 
 	
